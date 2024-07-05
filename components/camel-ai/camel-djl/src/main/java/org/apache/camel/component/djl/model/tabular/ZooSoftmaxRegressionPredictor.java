@@ -14,25 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.camel.component.djl.model.tabular;
 
-package org.apache.camel.dsl.jbang.core.commands.k.support;
+import org.apache.camel.Exchange;
+import org.apache.camel.component.djl.model.AbstractPredictor;
 
-public enum RuntimeType {
-    springBoot,
-    quarkus,
-    camelMain;
+public class ZooSoftmaxRegressionPredictor extends AbstractPredictor {
+    public ZooSoftmaxRegressionPredictor(String artifactId) {
+        super();
+    }
 
-    public static RuntimeType fromValue(String value) {
-        switch (value) {
-            case "spring-boot":
-                return RuntimeType.springBoot;
-            case "quarkus":
-                return RuntimeType.quarkus;
-            case "camel-main":
-                return RuntimeType.camelMain;
-            default:
-                throw new IllegalArgumentException("Unsupported runtime " + value);
-        }
+    @Override
+    public void process(Exchange exchange) throws Exception {
 
     }
 }

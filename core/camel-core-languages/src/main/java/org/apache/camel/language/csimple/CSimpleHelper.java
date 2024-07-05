@@ -20,6 +20,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -50,6 +51,8 @@ import org.apache.camel.util.SkipIterator;
 import org.apache.camel.util.StringHelper;
 import org.apache.camel.util.json.Jsoner;
 import org.apache.camel.util.xml.pretty.XmlPrettyPrinter;
+
+import static org.apache.camel.util.StringHelper.between;
 
 /**
  * A set of helper as static imports for the Camel compiled simple language.
@@ -127,7 +130,7 @@ public final class CSimpleHelper {
         List<String> keys = OgnlHelper.splitOgnl(key);
         for (String k : keys) {
             if (k.startsWith("[") && k.endsWith("]")) {
-                k = StringHelper.between(k, "[", "]");
+                k = between(k, "[", "]");
             }
             obj = doObjectAsIndex(context, obj, k);
         }
@@ -153,11 +156,41 @@ public final class CSimpleHelper {
         List<String> keys = OgnlHelper.splitOgnl(key);
         for (String k : keys) {
             if (k.startsWith("[") && k.endsWith("]")) {
-                k = StringHelper.between(k, "[", "]");
+                k = between(k, "[", "]");
             }
             obj = doObjectAsIndex(exchange.getContext(), obj, k);
         }
         return type.cast(obj);
+    }
+
+    public static Object variable(Exchange exchange, String name) {
+        return exchange.getVariable(name);
+    }
+
+    public static <T> T variableAs(Exchange exchange, String name, Class<T> type) {
+        return exchange.getVariable(name, type);
+    }
+
+    public static <T> T variableAsIndex(Exchange exchange, Class<T> type, String name, String key) {
+        Object obj = exchange.getVariable(name);
+        // try key as-is as it may be using dots or something that valid
+        Object objKey = doObjectAsIndex(exchange.getContext(), obj, key);
+        if (objKey != null && objKey != obj) {
+            return type.cast(objKey);
+        }
+        // the key may contain multiple keys ([0][foo]) so we need to walk these keys
+        List<String> keys = OgnlHelper.splitOgnl(key);
+        for (String k : keys) {
+            if (k.startsWith("[") && k.endsWith("]")) {
+                k = between(k, "[", "]");
+            }
+            obj = doObjectAsIndex(exchange.getContext(), obj, k);
+        }
+        return type.cast(obj);
+    }
+
+    public static Map<String, Object> variables(Exchange exchange) {
+        return exchange.getVariables();
     }
 
     public static String bodyOneLine(Exchange exchange) {
@@ -228,8 +261,16 @@ public final class CSimpleHelper {
         return InetAddressUtil.getLocalHostNameSafe();
     }
 
+    public static String fromRouteId(Exchange exchange) {
+        return exchange.getFromRouteId();
+    }
+
     public static String routeId(Exchange exchange) {
         return ExchangeHelper.getRouteId(exchange);
+    }
+
+    public static String routeGroup(Exchange exchange) {
+        return ExchangeHelper.getRouteGroup(exchange);
     }
 
     public static String stepId(Exchange exchange) {
@@ -422,6 +463,43 @@ public final class CSimpleHelper {
             Exception cause = new CamelExchangeException("Cannot evaluate message body as a number", exchange);
             throw RuntimeCamelException.wrapRuntimeCamelException(cause);
         }
+    }
+
+    public static String replace(Exchange exchange, String from, String to) {
+        String source = exchange.getMessage().getBody(String.class);
+        if (source != null) {
+            return source.replace(from, to);
+        } else {
+            return null;
+        }
+    }
+
+    public static Object empty(Exchange exchange, String type) {
+        if ("map".equalsIgnoreCase(type)) {
+            return new LinkedHashMap<>();
+        } else if ("string".equalsIgnoreCase(type)) {
+            return "";
+        } else if ("list".equalsIgnoreCase(type)) {
+            return new ArrayList<>();
+        }
+        throw new IllegalArgumentException("function empty(%s) has unknown type".formatted(type));
+    }
+
+    public static String substring(Exchange exchange, Object num1, Object num2) {
+        int head = exchange.getContext().getTypeConverter().tryConvertTo(int.class, exchange, num1);
+        int tail = exchange.getContext().getTypeConverter().tryConvertTo(int.class, exchange, num2);
+        if (head < 0 && tail == 0) {
+            // if there is only one value and its negative then we want to clip from tail
+            tail = head;
+            head = 0;
+        }
+        head = Math.abs(head);
+        tail = Math.abs(tail);
+        String text = exchange.getMessage().getBody(String.class);
+        if (text == null) {
+            return null;
+        }
+        return between(text, head, tail);
     }
 
     public static int random(Exchange exchange, Object min, Object max) {

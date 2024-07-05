@@ -4850,6 +4850,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "routeId", type = "string", description = "Sets the id of the route", displayName = "Route Id"),
                     @YamlProperty(name = "security", type = "array:org.apache.camel.model.rest.SecurityDefinition"),
                     @YamlProperty(name = "skipBindingOnErrorCode", type = "boolean", description = "Whether to skip binding on output if there is a custom HTTP error code header. This allows to build custom error messages that do not bind to json / xml etc, as success messages otherwise will do. This option will override what may be configured on a parent level", displayName = "Skip Binding On Error Code"),
+                    @YamlProperty(name = "streamCache", type = "boolean", description = "Whether stream caching is enabled on this rest operation.", displayName = "Stream Cache"),
                     @YamlProperty(name = "to", type = "object:org.apache.camel.model.ToDefinition", description = "The Camel endpoint this REST service will call, such as a direct endpoint to link to an existing route that handles this REST call.", displayName = "To"),
                     @YamlProperty(name = "type", type = "string", description = "Sets the class name to use for binding from input to POJO for the incoming data This option will override what may be configured on a parent level. The name of the class of the input data. Append a to the end of the name if you want the input to be an array type.", displayName = "Type")
             }
@@ -4947,6 +4948,11 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                 case "skipBindingOnErrorCode": {
                     String val = asText(node);
                     target.setSkipBindingOnErrorCode(val);
+                    break;
+                }
+                case "streamCache": {
+                    String val = asText(node);
+                    target.setStreamCache(val);
                     break;
                 }
                 case "to": {
@@ -6281,6 +6287,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "routeId", type = "string", description = "Sets the id of the route", displayName = "Route Id"),
                     @YamlProperty(name = "security", type = "array:org.apache.camel.model.rest.SecurityDefinition"),
                     @YamlProperty(name = "skipBindingOnErrorCode", type = "boolean", description = "Whether to skip binding on output if there is a custom HTTP error code header. This allows to build custom error messages that do not bind to json / xml etc, as success messages otherwise will do. This option will override what may be configured on a parent level", displayName = "Skip Binding On Error Code"),
+                    @YamlProperty(name = "streamCache", type = "boolean", description = "Whether stream caching is enabled on this rest operation.", displayName = "Stream Cache"),
                     @YamlProperty(name = "to", type = "object:org.apache.camel.model.ToDefinition", description = "The Camel endpoint this REST service will call, such as a direct endpoint to link to an existing route that handles this REST call.", displayName = "To"),
                     @YamlProperty(name = "type", type = "string", description = "Sets the class name to use for binding from input to POJO for the incoming data This option will override what may be configured on a parent level. The name of the class of the input data. Append a to the end of the name if you want the input to be an array type.", displayName = "Type")
             }
@@ -6378,6 +6385,11 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                 case "skipBindingOnErrorCode": {
                     String val = asText(node);
                     target.setSkipBindingOnErrorCode(val);
+                    break;
+                }
+                case "streamCache": {
+                    String val = asText(node);
+                    target.setStreamCache(val);
                     break;
                 }
                 case "to": {
@@ -6742,6 +6754,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "routeId", type = "string", description = "Sets the id of the route", displayName = "Route Id"),
                     @YamlProperty(name = "security", type = "array:org.apache.camel.model.rest.SecurityDefinition"),
                     @YamlProperty(name = "skipBindingOnErrorCode", type = "boolean", description = "Whether to skip binding on output if there is a custom HTTP error code header. This allows to build custom error messages that do not bind to json / xml etc, as success messages otherwise will do. This option will override what may be configured on a parent level", displayName = "Skip Binding On Error Code"),
+                    @YamlProperty(name = "streamCache", type = "boolean", description = "Whether stream caching is enabled on this rest operation.", displayName = "Stream Cache"),
                     @YamlProperty(name = "to", type = "object:org.apache.camel.model.ToDefinition", description = "The Camel endpoint this REST service will call, such as a direct endpoint to link to an existing route that handles this REST call.", displayName = "To"),
                     @YamlProperty(name = "type", type = "string", description = "Sets the class name to use for binding from input to POJO for the incoming data This option will override what may be configured on a parent level. The name of the class of the input data. Append a to the end of the name if you want the input to be an array type.", displayName = "Type")
             }
@@ -6839,6 +6852,11 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                 case "skipBindingOnErrorCode": {
                     String val = asText(node);
                     target.setSkipBindingOnErrorCode(val);
+                    break;
+                }
+                case "streamCache": {
+                    String val = asText(node);
+                    target.setStreamCache(val);
                     break;
                 }
                 case "to": {
@@ -9729,7 +9747,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "id", type = "string", description = "Sets the id of this node", displayName = "Id"),
                     @YamlProperty(name = "inheritErrorHandler", type = "boolean"),
                     @YamlProperty(name = "onPrepare", type = "string", description = "Uses the Processor when preparing the org.apache.camel.Exchange to be send. This can be used to deep-clone messages that should be send, or any custom logic needed before the exchange is send.", displayName = "On Prepare"),
-                    @YamlProperty(name = "parallelAggregate", type = "boolean", description = "If enabled then the aggregate method on AggregationStrategy can be called concurrently. Notice that this would require the implementation of AggregationStrategy to be implemented as thread-safe. By default this is false meaning that Camel synchronizes the call to the aggregate method. Though in some use-cases this can be used to archive higher performance when the AggregationStrategy is implemented as thread-safe.", displayName = "Parallel Aggregate"),
+                    @YamlProperty(name = "parallelAggregate", type = "boolean", deprecated = true, description = "If enabled then the aggregate method on AggregationStrategy can be called concurrently. Notice that this would require the implementation of AggregationStrategy to be implemented as thread-safe. By default this is false meaning that Camel synchronizes the call to the aggregate method. Though in some use-cases this can be used to archive higher performance when the AggregationStrategy is implemented as thread-safe.", displayName = "Parallel Aggregate"),
                     @YamlProperty(name = "parallelProcessing", type = "boolean", description = "If enabled then sending messages to the multicasts occurs concurrently. Note the caller thread will still wait until all messages has been fully processed, before it continues. Its only the sending and processing the replies from the multicasts which happens concurrently. When parallel processing is enabled, then the Camel routing engin will continue processing using last used thread from the parallel thread pool. However, if you want to use the original thread that called the multicast, then make sure to enable the synchronous option as well.", displayName = "Parallel Processing"),
                     @YamlProperty(name = "shareUnitOfWork", type = "boolean", description = "Shares the org.apache.camel.spi.UnitOfWork with the parent and each of the sub messages. Multicast will by default not share unit of work between the parent exchange and each multicasted exchange. This means each sub exchange has its own individual unit of work.", displayName = "Share Unit Of Work"),
                     @YamlProperty(name = "steps", type = "array:org.apache.camel.model.ProcessorDefinition"),
@@ -11255,6 +11273,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "routeId", type = "string", description = "Sets the id of the route", displayName = "Route Id"),
                     @YamlProperty(name = "security", type = "array:org.apache.camel.model.rest.SecurityDefinition"),
                     @YamlProperty(name = "skipBindingOnErrorCode", type = "boolean", description = "Whether to skip binding on output if there is a custom HTTP error code header. This allows to build custom error messages that do not bind to json / xml etc, as success messages otherwise will do. This option will override what may be configured on a parent level", displayName = "Skip Binding On Error Code"),
+                    @YamlProperty(name = "streamCache", type = "boolean", description = "Whether stream caching is enabled on this rest operation.", displayName = "Stream Cache"),
                     @YamlProperty(name = "to", type = "object:org.apache.camel.model.ToDefinition", description = "The Camel endpoint this REST service will call, such as a direct endpoint to link to an existing route that handles this REST call.", displayName = "To"),
                     @YamlProperty(name = "type", type = "string", description = "Sets the class name to use for binding from input to POJO for the incoming data This option will override what may be configured on a parent level. The name of the class of the input data. Append a to the end of the name if you want the input to be an array type.", displayName = "Type")
             }
@@ -11352,6 +11371,11 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                 case "skipBindingOnErrorCode": {
                     String val = asText(node);
                     target.setSkipBindingOnErrorCode(val);
+                    break;
+                }
+                case "streamCache": {
+                    String val = asText(node);
+                    target.setStreamCache(val);
                     break;
                 }
                 case "to": {
@@ -11737,6 +11761,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "routeId", type = "string", description = "Sets the id of the route", displayName = "Route Id"),
                     @YamlProperty(name = "security", type = "array:org.apache.camel.model.rest.SecurityDefinition"),
                     @YamlProperty(name = "skipBindingOnErrorCode", type = "boolean", description = "Whether to skip binding on output if there is a custom HTTP error code header. This allows to build custom error messages that do not bind to json / xml etc, as success messages otherwise will do. This option will override what may be configured on a parent level", displayName = "Skip Binding On Error Code"),
+                    @YamlProperty(name = "streamCache", type = "boolean", description = "Whether stream caching is enabled on this rest operation.", displayName = "Stream Cache"),
                     @YamlProperty(name = "to", type = "object:org.apache.camel.model.ToDefinition", description = "The Camel endpoint this REST service will call, such as a direct endpoint to link to an existing route that handles this REST call.", displayName = "To"),
                     @YamlProperty(name = "type", type = "string", description = "Sets the class name to use for binding from input to POJO for the incoming data This option will override what may be configured on a parent level. The name of the class of the input data. Append a to the end of the name if you want the input to be an array type.", displayName = "Type")
             }
@@ -11834,6 +11859,11 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                 case "skipBindingOnErrorCode": {
                     String val = asText(node);
                     target.setSkipBindingOnErrorCode(val);
+                    break;
+                }
+                case "streamCache": {
+                    String val = asText(node);
+                    target.setStreamCache(val);
                     break;
                 }
                 case "to": {
@@ -12267,6 +12297,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "routeId", type = "string", description = "Sets the id of the route", displayName = "Route Id"),
                     @YamlProperty(name = "security", type = "array:org.apache.camel.model.rest.SecurityDefinition"),
                     @YamlProperty(name = "skipBindingOnErrorCode", type = "boolean", description = "Whether to skip binding on output if there is a custom HTTP error code header. This allows to build custom error messages that do not bind to json / xml etc, as success messages otherwise will do. This option will override what may be configured on a parent level", displayName = "Skip Binding On Error Code"),
+                    @YamlProperty(name = "streamCache", type = "boolean", description = "Whether stream caching is enabled on this rest operation.", displayName = "Stream Cache"),
                     @YamlProperty(name = "to", type = "object:org.apache.camel.model.ToDefinition", description = "The Camel endpoint this REST service will call, such as a direct endpoint to link to an existing route that handles this REST call.", displayName = "To"),
                     @YamlProperty(name = "type", type = "string", description = "Sets the class name to use for binding from input to POJO for the incoming data This option will override what may be configured on a parent level. The name of the class of the input data. Append a to the end of the name if you want the input to be an array type.", displayName = "Type")
             }
@@ -12364,6 +12395,11 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                 case "skipBindingOnErrorCode": {
                     String val = asText(node);
                     target.setSkipBindingOnErrorCode(val);
+                    break;
+                }
+                case "streamCache": {
+                    String val = asText(node);
+                    target.setStreamCache(val);
                     break;
                 }
                 case "to": {
@@ -12531,7 +12567,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "ignoreInvalidEndpoints", type = "boolean", description = "Ignore the invalidate endpoint exception when try to create a producer with that endpoint", displayName = "Ignore Invalid Endpoints"),
                     @YamlProperty(name = "inheritErrorHandler", type = "boolean"),
                     @YamlProperty(name = "onPrepare", type = "string", description = "Uses the Processor when preparing the org.apache.camel.Exchange to be used send. This can be used to deep-clone messages that should be send, or any custom logic needed before the exchange is send.", displayName = "On Prepare"),
-                    @YamlProperty(name = "parallelAggregate", type = "boolean", description = "If enabled then the aggregate method on AggregationStrategy can be called concurrently. Notice that this would require the implementation of AggregationStrategy to be implemented as thread-safe. By default this is false meaning that Camel synchronizes the call to the aggregate method. Though in some use-cases this can be used to archive higher performance when the AggregationStrategy is implemented as thread-safe.", displayName = "Parallel Aggregate"),
+                    @YamlProperty(name = "parallelAggregate", type = "boolean", deprecated = true, description = "If enabled then the aggregate method on AggregationStrategy can be called concurrently. Notice that this would require the implementation of AggregationStrategy to be implemented as thread-safe. By default this is false meaning that Camel synchronizes the call to the aggregate method. Though in some use-cases this can be used to archive higher performance when the AggregationStrategy is implemented as thread-safe.", displayName = "Parallel Aggregate"),
                     @YamlProperty(name = "parallelProcessing", type = "boolean", description = "If enabled then sending messages to the recipients occurs concurrently. Note the caller thread will still wait until all messages has been fully processed, before it continues. Its only the sending and processing the replies from the recipients which happens concurrently. When parallel processing is enabled, then the Camel routing engin will continue processing using last used thread from the parallel thread pool. However, if you want to use the original thread that called the recipient list, then make sure to enable the synchronous option as well.", displayName = "Parallel Processing"),
                     @YamlProperty(name = "shareUnitOfWork", type = "boolean", description = "Shares the org.apache.camel.spi.UnitOfWork with the parent and each of the sub messages. Recipient List will by default not share unit of work between the parent exchange and each recipient exchange. This means each sub exchange has its own individual unit of work.", displayName = "Share Unit Of Work"),
                     @YamlProperty(name = "stopOnException", type = "boolean", description = "Will now stop further processing if an exception or failure occurred during processing of an org.apache.camel.Exchange and the caused exception will be thrown. Will also stop if processing the exchange failed (has a fault message) or an exception was thrown and handled by the error handler (such as using onException). In all situations the recipient list will stop further processing. This is the same behavior as in pipeline, which is used by the routing engine. The default behavior is to not stop but continue processing till the end", displayName = "Stop On Exception"),
@@ -17022,7 +17058,7 @@ public final class ModelDeserializers extends YamlDeserializerSupport {
                     @YamlProperty(name = "id", type = "string", description = "Sets the id of this node", displayName = "Id"),
                     @YamlProperty(name = "inheritErrorHandler", type = "boolean"),
                     @YamlProperty(name = "onPrepare", type = "string", description = "Uses the Processor when preparing the org.apache.camel.Exchange to be sent. This can be used to deep-clone messages that should be sent, or any custom logic needed before the exchange is sent.", displayName = "On Prepare"),
-                    @YamlProperty(name = "parallelAggregate", type = "boolean", description = "If enabled then the aggregate method on AggregationStrategy can be called concurrently. Notice that this would require the implementation of AggregationStrategy to be implemented as thread-safe. By default this is false meaning that Camel synchronizes the call to the aggregate method. Though in some use-cases this can be used to archive higher performance when the AggregationStrategy is implemented as thread-safe.", displayName = "Parallel Aggregate"),
+                    @YamlProperty(name = "parallelAggregate", type = "boolean", deprecated = true, description = "If enabled then the aggregate method on AggregationStrategy can be called concurrently. Notice that this would require the implementation of AggregationStrategy to be implemented as thread-safe. By default this is false meaning that Camel synchronizes the call to the aggregate method. Though in some use-cases this can be used to archive higher performance when the AggregationStrategy is implemented as thread-safe.", displayName = "Parallel Aggregate"),
                     @YamlProperty(name = "parallelProcessing", type = "boolean", description = "If enabled then processing each split messages occurs concurrently. Note the caller thread will still wait until all messages has been fully processed, before it continues. It's only processing the sub messages from the splitter which happens concurrently. When parallel processing is enabled, then the Camel routing engin will continue processing using last used thread from the parallel thread pool. However, if you want to use the original thread that called the splitter, then make sure to enable the synchronous option as well.", displayName = "Parallel Processing"),
                     @YamlProperty(name = "shareUnitOfWork", type = "boolean", description = "Shares the org.apache.camel.spi.UnitOfWork with the parent and each of the sub messages. Splitter will by default not share unit of work between the parent exchange and each split exchange. This means each split exchange has its own individual unit of work.", displayName = "Share Unit Of Work"),
                     @YamlProperty(name = "steps", type = "array:org.apache.camel.model.ProcessorDefinition"),

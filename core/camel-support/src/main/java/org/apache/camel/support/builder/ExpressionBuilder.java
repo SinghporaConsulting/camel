@@ -61,6 +61,8 @@ import org.apache.camel.util.StringHelper;
 import org.apache.camel.util.json.Jsoner;
 import org.apache.camel.util.xml.pretty.XmlPrettyPrinter;
 
+import static org.apache.camel.util.StringHelper.between;
+
 /**
  * A helper class for working with <a href="http://camel.apache.org/expression.html">expressions</a>.
  */
@@ -1842,6 +1844,35 @@ public class ExpressionBuilder {
     }
 
     /**
+     * Substring string values in the given expression.
+     */
+    public static Expression substring(
+            final Expression expression,
+            final int head, final int tail) {
+        return new ExpressionAdapter() {
+            @Override
+            public Object evaluate(Exchange exchange) {
+                String text = expression.evaluate(exchange, String.class);
+                if (text == null) {
+                    return null;
+                }
+                return between(text, head, tail);
+            }
+
+            @Override
+            public void init(CamelContext context) {
+                super.init(context);
+                expression.init(context);
+            }
+
+            @Override
+            public String toString() {
+                return "substring(" + expression + ", " + head + ", " + tail + ")";
+            }
+        };
+    }
+
+    /**
      * Replaces string values in the given expression.
      */
     public static Expression replaceAll(
@@ -2189,6 +2220,23 @@ public class ExpressionBuilder {
             @Override
             public String toString() {
                 return "routeId";
+            }
+        };
+    }
+
+    /**
+     * Returns an Expression for the original route id where this exchange was created.
+     */
+    public static Expression fromRouteIdExpression() {
+        return new ExpressionAdapter() {
+            @Override
+            public Object evaluate(Exchange exchange) {
+                return exchange.getFromRouteId();
+            }
+
+            @Override
+            public String toString() {
+                return "fromRouteId";
             }
         };
     }

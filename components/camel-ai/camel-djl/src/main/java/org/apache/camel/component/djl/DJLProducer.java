@@ -22,20 +22,20 @@ import org.apache.camel.component.djl.model.ModelPredictorProducer;
 import org.apache.camel.support.DefaultProducer;
 
 public class DJLProducer extends DefaultProducer {
-    private AbstractPredictor abstractPredictor;
+    private final AbstractPredictor predictor;
 
     public DJLProducer(DJLEndpoint endpoint) throws Exception {
         super(endpoint);
         if (endpoint.getArtifactId() != null) {
-            this.abstractPredictor
-                    = ModelPredictorProducer.getZooPredictor(endpoint.getApplication(), endpoint.getArtifactId());
+            this.predictor = ModelPredictorProducer.getZooPredictor(
+                    endpoint.getApplication(), endpoint.getArtifactId());
         } else {
-            this.abstractPredictor = ModelPredictorProducer.getCustomPredictor(endpoint.getApplication(), endpoint.getModel(),
-                    endpoint.getTranslator());
+            this.predictor = ModelPredictorProducer.getCustomPredictor(
+                    endpoint.getApplication(), endpoint.getModel(), endpoint.getTranslator());
         }
     }
 
     public void process(Exchange exchange) throws Exception {
-        this.abstractPredictor.process(exchange);
+        this.predictor.process(exchange);
     }
 }

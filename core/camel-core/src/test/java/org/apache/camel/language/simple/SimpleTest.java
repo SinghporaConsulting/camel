@@ -47,6 +47,7 @@ import org.apache.camel.spi.Registry;
 import org.apache.camel.spi.UuidGenerator;
 import org.apache.camel.spi.VariableRepository;
 import org.apache.camel.spi.VariableRepositoryFactory;
+import org.apache.camel.support.ExchangeHelper;
 import org.apache.camel.util.InetAddressUtil;
 import org.apache.camel.util.StringHelper;
 import org.junit.jupiter.api.Test;
@@ -235,7 +236,8 @@ public class SimpleTest extends LanguageTestSupport {
         assertExpression("${in.headers.foo}", "abc");
         assertExpression("${header.foo}", "abc");
         assertExpression("${headers.foo}", "abc");
-        assertExpression("${routeId}", exchange.getFromRouteId());
+        assertExpression("${routeId}", ExchangeHelper.getRouteId(exchange));
+        assertExpression("${fromRouteId}", exchange.getFromRouteId());
         exchange.getExchangeExtension().setFromRouteId("myRouteId");
         assertExpression("${routeId}", "myRouteId");
     }
@@ -2059,6 +2061,57 @@ public class SimpleTest extends LanguageTestSupport {
         exchange.getMessage().setBody("Hello");
         exchange.getMessage().setHeader("foo", "{\"foo\": \"cheese\"}");
         assertExpression("${replace(&quot;,&apos;,${header.foo})}", "{'foo': 'cheese'}");
+    }
+
+    @Test
+    public void testSubstringExpression() {
+        exchange.getMessage().setBody("ABCDEFGHIJK");
+        // head
+        assertExpression("${substring(0)}", "ABCDEFGHIJK");
+        assertExpression("${substring(1)}", "BCDEFGHIJK");
+        assertExpression("${substring(3)}", "DEFGHIJK");
+        assertExpression("${substring(99)}", "");
+        // tail
+        assertExpression("${substring(0)}", "ABCDEFGHIJK");
+        assertExpression("${substring(-1)}", "ABCDEFGHIJ");
+        assertExpression("${substring(-3)}", "ABCDEFGH");
+        assertExpression("${substring(-99)}", "");
+        // head and tail
+        assertExpression("${substring(1,-1)}", "BCDEFGHIJ");
+        assertExpression("${substring(3,-3)}", "DEFGH");
+        assertExpression("${substring(1,-3)}", "BCDEFGH");
+        assertExpression("${substring(3,-1)}", "DEFGHIJ");
+        assertExpression("${substring(0,-1)}", "ABCDEFGHIJ");
+        assertExpression("${substring(1,0)}", "BCDEFGHIJK");
+        assertExpression("${substring(99,-99)}", "");
+        assertExpression("${substring(0,-99)}", "");
+        assertExpression("${substring(99,0)}", "");
+        assertExpression("${substring(0,0)}", "ABCDEFGHIJK");
+
+        exchange.getMessage().setBody("Hello World");
+        exchange.getMessage().setHeader("foo", "1234567890");
+
+        // head
+        assertExpression("${substring(0,0,${header.foo})}", "1234567890");
+        assertExpression("${substring(1,0,${header.foo})}", "234567890");
+        assertExpression("${substring(3,0,${header.foo})}", "4567890");
+        assertExpression("${substring(99,0,${header.foo})}", "");
+        // tail
+        assertExpression("${substring(0,0,${header.foo})}", "1234567890");
+        assertExpression("${substring(0,-1,${header.foo})}", "123456789");
+        assertExpression("${substring(0,-3,${header.foo})}", "1234567");
+        assertExpression("${substring(0,-99,${header.foo})}", "");
+        // head and tail
+        assertExpression("${substring(1,-1,${header.foo})}", "23456789");
+        assertExpression("${substring(3,-3,${header.foo})}", "4567");
+        assertExpression("${substring(1,-3,${header.foo})}", "234567");
+        assertExpression("${substring(3,-1,${header.foo})}", "456789");
+        assertExpression("${substring(0,-1,${header.foo})}", "123456789");
+        assertExpression("${substring(1,0,${header.foo})}", "234567890");
+        assertExpression("${substring(99,-99,${header.foo})}", "");
+        assertExpression("${substring(0,-99,${header.foo})}", "");
+        assertExpression("${substring(99,0,${header.foo})}", "");
+        assertExpression("${substring(0,0,${header.foo})}", "1234567890");
     }
 
     @Test
